@@ -1,10 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { ChevronsLeftIcon, MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
+
+import { cn } from "@/lib/utils";
+
+import { UserItem } from "./user-item";
 
 export const Navigation = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -105,7 +108,7 @@ export const Navigation = () => {
           <ChevronsLeftIcon className="h-6 w-6" />
         </div>
         <div>
-          <p className="whitespace-nowrap">Action Items</p>
+          <UserItem />
         </div>
         <div className="mt-4">
           <p>Documents</p>
