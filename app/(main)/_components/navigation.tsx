@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
+import { DocumentList } from "./document-list";
 import { UserItem } from "./user-item";
 import { Item } from "./item";
 
@@ -140,7 +141,7 @@ export const Navigation = () => {
           />
         </div>
         <div className="mt-4">
-          <p>Documents</p>
+          <DocumentList />
         </div>
         <div
           onMouseDown={handleMouseDown}
