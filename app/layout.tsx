@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import type { Metadata } from "next";
+import { Toaster } from "sonner";
 
 import { ConverClientProvider } from "@/components/providers/convex.provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -7,6 +8,31 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ConverClientProvider>
+          <ThemeProvider
+            enableSystem
+            attribute="class"
+            defaultTheme="system"
+            disableTransitionOnChange
+            storageKey="danotion-theme-1"
+          >
+            <Toaster richColors position="bottom-center" expand={true} />
+            {children}
+          </ThemeProvider>
+        </ConverClientProvider>
+      </body>
+    </html>
+  );
+}
 
 export const metadata: Metadata = {
   title: "Danotion",
@@ -26,27 +52,3 @@ export const metadata: Metadata = {
     ],
   },
 };
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ConverClientProvider>
-          <ThemeProvider
-            enableSystem
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            storageKey="danotion-theme-1"
-          >
-            {children}
-          </ThemeProvider>
-        </ConverClientProvider>
-      </body>
-    </html>
-  );
-}
