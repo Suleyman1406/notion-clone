@@ -28,22 +28,6 @@ export const create = mutation({
 });
 
 export const get = query({
-  handler: async (ctxt, args) => {
-    const identity = await ctxt.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Not authenticated.");
-    }
-
-    const documents = await ctxt.db.query("documents").collect();
-    if (!documents) {
-      throw new Error("Not found.");
-    }
-    return documents;
-  },
-});
-
-export const getSidebar = query({
   args: {
     parentDocument: v.optional(v.id("documents")),
   },
@@ -104,6 +88,102 @@ export const archive = mutation({
     await recursiveArchive(args.id);
     const document = await ctxt.db.patch(args.id, { isArchived: true });
 
+    return document;
+  },
+});
+
+export const unarchive = mutation({
+  args: {
+    id: v.id("documents"),
+  },
+  handler: async (ctxt, args) => {
+    const identity = await ctxt.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+    const userId = identity.subject;
+
+    const existingDocument = await ctxt.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Not found.");
+    }
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized.");
+    }
+
+    let parentDocumentId;
+    if (existingDocument.parentDocument) {
+      const parentDocument = await ctxt.db.get(existingDocument.parentDocument);
+      if (parentDocument && !parentDocument.isArchived) {
+        parentDocumentId = parentDocument._id;
+      }
+    }
+
+    const recursiveArchive = async (documentId: Id<"documents">) => {
+      const children = await ctxt.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", userId).eq("parentDocument", documentId)
+        )
+        .collect();
+
+      for (let child of children) {
+        await recursiveArchive(child._id);
+        await ctxt.db.patch(child._id, { isArchived: false });
+      }
+    };
+
+    await recursiveArchive(args.id);
+    const document = await ctxt.db.patch(args.id, {
+      isArchived: false,
+      parentDocument: parentDocumentId,
+    });
+
+    return document;
+  },
+});
+
+export const getArchived = query({
+  handler: async (ctxt) => {
+    const identity = await ctxt.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+    const userId = identity.subject;
+
+    const documents = await ctxt.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .collect();
+
+    return documents;
+  },
+});
+
+export const remove = mutation({
+  args: {
+    id: v.id("documents"),
+  },
+  handler: async (ctxt, args) => {
+    const identity = await ctxt.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+    const userId = identity.subject;
+
+    const existingDocument = await ctxt.db.get(args.id);
+    if (!existingDocument) {
+      throw new Error("Not found.");
+    }
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized.");
+    }
+
+    const document = await ctxt.db.delete(args.id);
     return document;
   },
 });

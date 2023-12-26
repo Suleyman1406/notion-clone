@@ -30,7 +30,7 @@ export const DocumentList = ({
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const documents = useQuery(api.documents.getSidebar, {
+  const documents = useQuery(api.documents.get, {
     parentDocument: parentDocumentId,
   });
 

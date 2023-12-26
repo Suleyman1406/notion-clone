@@ -30,7 +30,7 @@ import { useUser } from "@clerk/clerk-react";
 interface IItemProps {
   label: string;
   icon: LucideIcon;
-  onClick: () => void;
+  onClick?: () => void;
   level?: number;
   active?: boolean;
   expanded?: boolean;

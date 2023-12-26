@@ -7,6 +7,7 @@ import {
   PlusIcon,
   SearchIcon,
   SettingsIcon,
+  TrashIcon,
 } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -17,8 +18,14 @@ import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { DocumentList } from "./document-list";
 import { UserItem } from "./user-item";
+import { TrashBox } from "./trash-box";
 import { Item } from "./item";
 
 export const Navigation = () => {
@@ -148,6 +155,17 @@ export const Navigation = () => {
             label="Add a page"
             onClick={handleCreateDocument}
           />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="Trash" icon={TrashIcon} />
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 w-72"
+              side={isMobile ? "bottom" : "right"}
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
