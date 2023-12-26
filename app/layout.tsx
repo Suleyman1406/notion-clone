@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { ConverClientProvider } from "@/components/providers/convex.provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import "./globals.css";
@@ -34,15 +35,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          enableSystem
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-          storageKey="danotion-theme-1"
-        >
-          {children}
-        </ThemeProvider>
+        <ConverClientProvider>
+          <ThemeProvider
+            enableSystem
+            attribute="class"
+            defaultTheme="system"
+            disableTransitionOnChange
+            storageKey="danotion-theme-1"
+          >
+            {children}
+          </ThemeProvider>
+        </ConverClientProvider>
       </body>
     </html>
   );
