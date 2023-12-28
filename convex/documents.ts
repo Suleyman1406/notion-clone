@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
+import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
   args: {
@@ -185,5 +185,25 @@ export const remove = mutation({
 
     const document = await ctxt.db.delete(args.id);
     return document;
+  },
+});
+
+export const getSearch = query({
+  handler: async (ctxt) => {
+    const identity = await ctxt.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+    const userId = identity.subject;
+
+    const documents = await ctxt.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+
+    return documents;
   },
 });
