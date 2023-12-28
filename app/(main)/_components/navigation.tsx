@@ -1,5 +1,10 @@
 "use client";
 
+import { ElementRef, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useMediaQuery } from "usehooks-ts";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
 import {
   ChevronsLeftIcon,
   MenuIcon,
@@ -9,14 +14,10 @@ import {
   SettingsIcon,
   TrashIcon,
 } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-import { useMediaQuery } from "usehooks-ts";
-import { useMutation } from "convex/react";
-import { toast } from "sonner";
 
-import { api } from "@/convex/_generated/api";
+import { useSettings } from "@/hooks/use-settings";
 import { useSearch } from "@/hooks/use-search";
+import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
 import {
@@ -28,7 +29,6 @@ import { DocumentList } from "./document-list";
 import { UserItem } from "./user-item";
 import { TrashBox } from "./trash-box";
 import { Item } from "./item";
-import { useSettings } from "@/hooks/use-settings";
 
 export const Navigation = () => {
   const createDocument = useMutation(api.documents.create);
