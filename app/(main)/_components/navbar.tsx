@@ -1,12 +1,15 @@
 "use client";
 
+import { MenuIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 
 import { Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
-import { MenuIcon } from "lucide-react";
+
 import { Title } from "./title";
+import { Banner } from "./banner";
+import { Menu } from "./menu";
 
 interface INavbarProps {
   isCollapsed: boolean;
@@ -21,8 +24,11 @@ export const Navbar = ({ onResetWidth, isCollapsed }: INavbarProps) => {
 
   if (!document) {
     return (
-      <nav className="bg-background dark:bg-[#1f1f1f] flex items-center gap-x-4 px-3 py-2 w-full">
+      <nav className="bg-background dark:bg-[#1f1f1f] flex items-center justify-between gap-x-4 px-3 py-2 w-full">
         <Title.Skeleton />
+        <div className="flex items-center gap-x-2">
+          <Menu.Skeleton />
+        </div>
       </nav>
     );
   }
@@ -39,8 +45,12 @@ export const Navbar = ({ onResetWidth, isCollapsed }: INavbarProps) => {
         )}
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
+          <div className="flex items-center gap-x-2">
+            <Menu documentId={document._id} />
+          </div>
         </div>
       </nav>
+      {document.isArchived && <Banner documentId={document._id} />}
     </>
   );
 };
