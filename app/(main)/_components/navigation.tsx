@@ -28,9 +28,9 @@ import { DocumentList } from "./document-list";
 import { UserItem } from "./user-item";
 import { TrashBox } from "./trash-box";
 import { Item } from "./item";
+import { useSettings } from "@/hooks/use-settings";
 
 export const Navigation = () => {
-  const search = useSearch();
   const createDocument = useMutation(api.documents.create);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
@@ -39,6 +39,8 @@ export const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const isResizingRef = useRef(false);
   const pathname = usePathname();
+  const settings = useSettings();
+  const search = useSearch();
 
   useEffect(() => {
     if (isMobile) {
@@ -148,7 +150,11 @@ export const Navigation = () => {
             isSearch
             onClick={search.onOpen}
           />
-          <Item label="Settings" icon={SettingsIcon} onClick={() => {}} />
+          <Item
+            label="Settings"
+            icon={SettingsIcon}
+            onClick={settings.onOpen}
+          />
           <Item
             label="New page"
             icon={PlusCircleIcon}

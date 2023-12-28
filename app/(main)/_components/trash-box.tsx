@@ -93,7 +93,7 @@ export const TrashBox = ({}: ITrashBoxProps) => {
             <div className="flex items-center">
               <div
                 role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
+                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                 onClick={(e) => handleUnarchive(e, document._id)}
               >
                 <UndoIcon className="h-4 w-4" />
@@ -101,7 +101,7 @@ export const TrashBox = ({}: ITrashBoxProps) => {
               <ConfirmModal onConfirm={() => handleRemove(document._id)}>
                 <div
                   role="button"
-                  className="rounded-sm p-2 hover:bg-neutral-200"
+                  className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                 >
                   <TrashIcon className="h-4 w-4" />
                 </div>

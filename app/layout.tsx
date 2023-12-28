@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 
 import { ConverClientProvider } from "@/components/providers/convex.provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
             storageKey="danotion-theme-1"
           >
             <Toaster richColors position="bottom-center" expand={true} />
+            <ModalProvider />
             {children}
           </ThemeProvider>
         </ConverClientProvider>
