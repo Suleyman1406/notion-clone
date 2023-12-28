@@ -1,7 +1,7 @@
 "use client";
 
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
@@ -28,6 +28,7 @@ import {
 import { DocumentList } from "./document-list";
 import { UserItem } from "./user-item";
 import { TrashBox } from "./trash-box";
+import { Navbar } from "./navbar";
 import { Item } from "./item";
 
 export const Navigation = () => {
@@ -41,6 +42,7 @@ export const Navigation = () => {
   const pathname = usePathname();
   const settings = useSettings();
   const search = useSearch();
+  const params = useParams();
 
   useEffect(() => {
     if (isMobile) {
@@ -194,15 +196,19 @@ export const Navigation = () => {
           isMobile && "w-full left-0"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && (
-            <MenuIcon
-              onClick={resetWidth}
-              role="button"
-              className="w-6 h-6 text-muted-foreground"
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                role="button"
+                className="w-6 h-6 text-muted-foreground"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
