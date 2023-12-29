@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
@@ -24,8 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { use } from "react";
-import { useUser } from "@clerk/clerk-react";
 
 interface IItemProps {
   label: string;
@@ -113,9 +112,9 @@ export const Item = ({
         </div>
       )}
       {documentIcon ? (
-        <div>{documentIcon}</div>
+        <div className="w-6 shrink-0 mr-2 text-[18px]">{documentIcon}</div>
       ) : (
-        <Icon className="shrink-0 h-[18px] mr-2 to-muted-foreground" />
+        <Icon className="w-6 shrink-0 h-[18px] mr-2 text-muted-foreground" />
       )}
       <span className="truncate">{label}</span>
       {isSearch && (
