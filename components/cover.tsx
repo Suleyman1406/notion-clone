@@ -9,6 +9,7 @@ import Image from "next/image";
 
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { Id } from "@/convex/_generated/dataModel";
+import { useEdgeStore } from "@/lib/edgestore";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
@@ -20,8 +21,9 @@ interface ICoverProps {
 }
 
 export const Cover = ({ url, preview }: ICoverProps) => {
-  const coverImage = useCoverImage();
   const [isLoading, setIsLoading] = useState(false);
+  const { edgestore } = useEdgeStore();
+  const coverImage = useCoverImage();
   const params = useParams();
 
   const removeCoverImage = useMutation(api.documents.removeCoverImage);
@@ -29,13 +31,24 @@ export const Cover = ({ url, preview }: ICoverProps) => {
   const onRemoveCoverImage = async () => {
     setIsLoading(true);
 
+    const promises = [];
+    if (url) {
+      const removeFileFromEdgePromise = edgestore.publicFiles.delete({
+        url,
+      });
+      promises.push(removeFileFromEdgePromise);
+    }
+
     const removeCoverPromise = removeCoverImage({
       id: params.documentId as Id<"documents">,
-    }).finally(() => {
+    });
+    promises.push(removeCoverPromise);
+
+    const promise = Promise.all(promises).finally(() => {
       setIsLoading(false);
     });
 
-    toast.promise(removeCoverPromise, {
+    toast.promise(promise, {
       loading: "Removing cover image...",
       success: "Cover image removed",
       error: "Failed to remove cover image",
@@ -57,7 +70,7 @@ export const Cover = ({ url, preview }: ICoverProps) => {
             size="sm"
             variant="outline"
             disabled={isLoading}
-            onClick={coverImage.onOpen}
+            onClick={() => coverImage.onOpen({ url })}
             className="text-muted-foreground text-xs"
           >
             <ImageIcon className="h-4 w-4 mr-2" />
