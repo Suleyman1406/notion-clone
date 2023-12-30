@@ -14,11 +14,7 @@ interface IEditorProps {
   onChange: (value: string) => void;
 }
 
-export const Editor = ({
-  editable,
-  onChange,
-  initialContent,
-}: IEditorProps) => {
+const Editor = ({ editable, onChange, initialContent }: IEditorProps) => {
   const { edgestore } = useEdgeStore();
   const { resolvedTheme } = useTheme();
 
@@ -48,3 +44,5 @@ export const Editor = ({
     </div>
   );
 };
+
+export default Editor;
