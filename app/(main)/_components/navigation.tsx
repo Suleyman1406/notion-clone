@@ -1,7 +1,7 @@
 "use client";
 
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
@@ -41,6 +41,7 @@ export const Navigation = () => {
   const isResizingRef = useRef(false);
   const pathname = usePathname();
   const settings = useSettings();
+  const router = useRouter();
   const search = useSearch();
   const params = useParams();
 
@@ -116,6 +117,8 @@ export const Navigation = () => {
   const handleCreateDocument = async () => {
     const createDocPromise = createDocument({
       title: "Untitled",
+    }).then((documentId) => {
+      router.push(`/documents/${documentId}`);
     });
     toast.promise(createDocPromise, {
       loading: "Creating a new note...",

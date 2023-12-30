@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
 import {
@@ -31,7 +31,6 @@ interface IItemProps {
   icon: LucideIcon;
   onClick?: () => void;
   level?: number;
-  active?: boolean;
   expanded?: boolean;
   isSearch?: boolean;
   id?: Id<"documents">;
@@ -40,22 +39,24 @@ interface IItemProps {
 }
 
 export const Item = ({
-  icon: Icon,
-  onClick,
-  label,
   id,
-  active,
+  label,
+  onClick,
   expanded,
   isSearch,
   onExpand,
   level = 0,
+  icon: Icon,
   documentIcon,
 }: IItemProps) => {
   const ChevronIcon = expanded ? ChevronDownIcon : ChevronRightIcon;
   const createDocument = useMutation(api.documents.create);
   const archiveDocument = useMutation(api.documents.archive);
   const router = useRouter();
+  const params = useParams();
   const { user } = useUser();
+
+  const isActive = id && params.documentId === id;
 
   const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -68,9 +69,9 @@ export const Item = ({
     const createDocPromise = createDocument({
       title: "Untitled",
       parentDocument: id,
-    }).then(() => {
+    }).then((documentId) => {
       if (!expanded && onExpand) onExpand();
-      router.push(`/documents/${id}`);
+      router.push(`/documents/${documentId}`);
     });
 
     toast.promise(createDocPromise, {
@@ -83,7 +84,9 @@ export const Item = ({
   const handleArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     if (!id) return;
-    const archiveDocPromise = archiveDocument({ id });
+    const archiveDocPromise = archiveDocument({ id }).then(() => {
+      router.push(`/documents`);
+    });
 
     toast.promise(archiveDocPromise, {
       loading: "Moving to trash...",
@@ -99,7 +102,7 @@ export const Item = ({
       style={{ paddingLeft: `${(level + 1) * 12}px` }}
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary"
+        isActive && "bg-muted-foreground/5 text-primary"
       )}
     >
       {!!id && (
@@ -116,7 +119,7 @@ export const Item = ({
       ) : (
         <Icon className="w-6 shrink-0 h-[18px] mr-2 text-muted-foreground" />
       )}
-      <span className="truncate">{label}</span>
+      <span className={cn("truncate", isActive && "font-bold")}>{label}</span>
       {isSearch && (
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
           <span className="text-sm">⌘</span>K

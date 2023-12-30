@@ -10,8 +10,10 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 import { ConfirmModal } from "@/components/modals/confirm-modal";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/spinner";
 import { Input } from "@/components/ui/input";
+import { Hint } from "@/components/hint";
 
 interface ITrashBoxProps {}
 
@@ -21,6 +23,7 @@ export const TrashBox = ({}: ITrashBoxProps) => {
   const documents = useQuery(api.documents.getArchived);
   const removeDocument = useMutation(api.documents.remove);
   const unarchiveDocument = useMutation(api.documents.unarchive);
+  const removeAllDocuments = useMutation(api.documents.removeAll);
 
   const [search, setSearch] = useState("");
 
@@ -58,6 +61,16 @@ export const TrashBox = ({}: ITrashBoxProps) => {
       error: "Failed to deleted note.",
     });
   };
+  const handleRemoveAll = async () => {
+    const removeAllPromise = removeAllDocuments({}).then(() => {});
+
+    toast.promise(removeAllPromise, {
+      loading: "Deleting all trashed notes...",
+      success: "All notes removed from trash!",
+      error: "Failed to delete all trash notes.",
+    });
+    router.push("/documents");
+  };
 
   if (!documents) {
     return (
@@ -77,8 +90,15 @@ export const TrashBox = ({}: ITrashBoxProps) => {
           className="h-7 px-2 focus-visible:ring-transparent bg-secondary"
           placeholder="Filter by page title..."
         />
+        <ConfirmModal onConfirm={handleRemoveAll}>
+          <Button variant="destructive" size="xs">
+            <Hint description="Empty Trash" side="bottom" sideOffset={10}>
+              <TrashIcon className="h-4 w-4" />
+            </Hint>
+          </Button>
+        </ConfirmModal>
       </div>
-      <div className="mt-2 px-1 pb-1">
+      <div className="mt-2 px-1 pb-1 max-h-[400px] overflow-auto">
         <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
           No documents found...
         </p>

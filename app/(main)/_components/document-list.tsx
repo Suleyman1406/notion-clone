@@ -75,7 +75,6 @@ export const DocumentList = ({
             label={document.title}
             documentIcon={document.icon}
             expanded={expanded[document._id]}
-            active={params.id === document._id}
             onClick={() => onRedirect(document._id)}
             onExpand={() => handleExpand(document._id)}
           />

@@ -187,6 +187,30 @@ export const remove = mutation({
     return document;
   },
 });
+export const removeAll = mutation({
+  handler: async (ctxt, args) => {
+    const identity = await ctxt.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated.");
+    }
+    const userId = identity.subject;
+
+    const documents = await ctxt.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .collect();
+    const promises = [];
+
+    for (const document of documents) {
+      promises.push(ctxt.db.delete(document._id));
+    }
+    await Promise.all(promises);
+
+    return documents;
+  },
+});
 
 export const getSearch = query({
   handler: async (ctxt) => {
