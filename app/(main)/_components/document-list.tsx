@@ -13,16 +13,13 @@ import { Item } from "./item";
 
 interface IDocumentListProps {
   parentDocumentId?: Id<"documents">;
-  data?: Doc<"documents">[];
   level?: number;
 }
 
 export const DocumentList = ({
-  data,
   level = 0,
   parentDocumentId,
 }: IDocumentListProps) => {
-  const params = useParams();
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 

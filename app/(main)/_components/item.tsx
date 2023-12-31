@@ -101,7 +101,7 @@ export const Item = ({
       role="button"
       style={{ paddingLeft: `${(level + 1) * 12}px` }}
       className={cn(
-        "group min-h-[27px] text-sm py-1 pr-3 w-full md:hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
+        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium cursor-pointer",
         isActive && "bg-muted-foreground/5 text-primary"
       )}
     >
@@ -109,7 +109,7 @@ export const Item = ({
         <div
           role="button"
           onClick={handleExpand}
-          className="h-full rounded-sm md:hover:bg-neutral-300 md:dark:hover:bg-neutral-600 mr-1"
+          className="h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1 cursor-pointer"
         >
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
         </div>
@@ -131,7 +131,7 @@ export const Item = ({
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
               <div
                 role="button"
-                className="opacity-0 md:group-hover:opacity-100 ml-auto h-full rounded-sm md:hover:bg-neutral-300 md:hover:dark:bg-neutral-600"
+                className="opacity-0 group-hover:opacity-100 ml-auto h-full rounded-sm hover:bg-neutral-300 hover:dark:bg-neutral-600"
               >
                 <MoreHorizontalIcon className="h-4 w-4 text-muted-foreground" />
               </div>
@@ -159,7 +159,7 @@ export const Item = ({
           <div
             onClick={handleCreate}
             role="button"
-            className="opacity-0 group-md:hover:opacity-100 h-full ml-auto rounded-sm md:hover:bg-neutral-300 dark:md:hover:bg-neutral-600"
+            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 cursor-pointer"
           >
             <PlusIcon className="h-4 w-4 text-muted-foreground" />
           </div>
